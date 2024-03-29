@@ -1,4 +1,4 @@
-from firebase_functions import logger
+# from firebase_functions import logger
 from firebase_admin import initialize_app, firestore
 
 from download_and_upload import download_and_upload
