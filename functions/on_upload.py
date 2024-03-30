@@ -102,5 +102,5 @@ def summarize(text, model):
 
 def update_doc(arxiv_id, db, summary):
     logger.log(f"{arxiv_id}: updating doc")
-    doc_ref = db.collection('content').document(arxiv_id)
+    doc_ref = db.collection('arxiv').document(arxiv_id)
     doc_ref.update({"summary": summary, "status": "Complete"})

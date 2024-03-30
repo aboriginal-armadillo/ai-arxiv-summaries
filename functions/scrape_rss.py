@@ -1,6 +1,6 @@
 # from firebase_functions import logger
 
-
+from firebase_functions import logger
 from download_and_upload import download_and_upload
 
 import feedparser
@@ -37,16 +37,16 @@ def scrape_rss(url, db):
     enteries = read_arxiv_rss(url)
     for e in enteries:
         arxiv_id = e['link'].split('/')[-1]
-        individual_article(arxiv_id)
+        individual_article_local(arxiv_id, db, e)
 
 
-def individual_article(arxiv_id):
+def individual_article_local(arxiv_id, db, e= {}):
     logger.log(f"{arxiv_id}: Processing...")
-    doc_ref = db.collection('content').document(arxiv_id)
+    doc_ref = db.collection('arxiv').document(arxiv_id)
     doc_ref.set({
         "status": "Downloading...",
-        "title": e['title'],
-        "author": e['author'],
+        "title": e.get('title', ""),
+        "author": e.get('author',""),
     })
     download_and_upload(arxiv_id)
 
