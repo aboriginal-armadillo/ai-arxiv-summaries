@@ -1,12 +1,11 @@
 # from firebase_functions import logger
-from firebase_admin import initialize_app, firestore
+
 
 from download_and_upload import download_and_upload
 
 import feedparser
 
-initialize_app()
-db = firestore.client()
+
 
 def read_arxiv_rss(feed_url):
     """
@@ -33,18 +32,22 @@ def read_arxiv_rss(feed_url):
         entries.append(entry_data)
 
     return entries
-def scrape_rss(url):
+def scrape_rss(url, db):
     logger.log(f"scrape_rss({url})")
     enteries = read_arxiv_rss(url)
     for e in enteries:
         arxiv_id = e['link'].split('/')[-1]
-        logger.log(f"{arxiv_id}: Processing...")
-        doc_ref = db.collection('content').document(arxiv_id)
-        doc_ref.set({
-            "status": "Downloading...",
-            "title": e['title'],
-            "author": e['author'],
-        })
-        download_and_upload(arxiv_id)
+        individual_article(arxiv_id)
+
+
+def individual_article(arxiv_id):
+    logger.log(f"{arxiv_id}: Processing...")
+    doc_ref = db.collection('content').document(arxiv_id)
+    doc_ref.set({
+        "status": "Downloading...",
+        "title": e['title'],
+        "author": e['author'],
+    })
+    download_and_upload(arxiv_id)
 
 
