@@ -14,7 +14,7 @@ def check_size(text, n):
     :return: the string `text` but  no longer than n tokens
     """
     logger.log('checking_size...')
-    encoding = tiktoken.encoding_for_model("cl100k_base")
+    encoding = tiktoken.get_encoding("cl100k_base")
     tokens = encoding.encode(text)
     n_tokens = len(tokens)
     logger.log(f"text is {n_tokens} tokens long")
@@ -79,11 +79,14 @@ def handle_upload_internal(bucket_name, file_name, db):
     text, n_tokens = check_size(text, 124000)
     model = "gpt-3.5-turbo-16k"
     if n_tokens > 14000:
-        logger.log("using gpt-4-turbo-preview model")
         model = "gpt-4-turbo-preview"
+    logger.log(f"{arxiv_id}: summarizing text with {model}")
     summary = summarize(text, model)
+    logger.log(f"writing summary to {arxiv_id}/summary.txt")
     write_text_to_bucket(bucket_name, f"{arxiv_id}/summary.txt", summary)
+    logger.log(f"{arxiv_id}: updating doc with summary")
     update_doc(arxiv_id, db, summary)
+    logger.log(f"{arxiv_id}: done")
 
 def summarize(text, model):
     completion = openai.ChatCompletion.create(

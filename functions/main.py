@@ -15,15 +15,14 @@ db = firestore.client()
 # initialize_app()
 
 
-@https_fn.on_request()
-def individual_article(req: https_fn.Request) -> https_fn.Response:
+@https_fn.on_call()
+def individual_article_v2(req: https_fn.CallableRequest) -> https_fn.Response:
     logger.log("individual_article called")
-    logger.log(req.args)
-    arxiv_id = req.args.get('arxiv_id')
+    arxiv_id = req.data['arxiv_id']
     logger.log(f"individual_article({arxiv_id}) via REST API called")
     individual_article_local(arxiv_id, db)
     logger.log(f"individual_article({arxiv_id}) completed")
-    return https_fn.Response("Hello world!")
+    return {'text': "success"}
 
 # @scheduler_fn.on_schedule(schedule="every day 00:33", memory=options.MemoryOption.MB_512)
 # def scrape_rss_cron(event: scheduler_fn.ScheduledEvent):
