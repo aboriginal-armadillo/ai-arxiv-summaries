@@ -5,7 +5,7 @@
 #### Functions
 - [x] f1(arxiv_id) -> downloads pdf to storage [link](functions/download_and_upload.py)
 - [x] f2(cron) nightly job to read RSS feeds from arxiv and run f1 on each IFF id doesn't already exist - create document in collection, creates folder with initial pdf
-- [*] f3(on_upload) onUpload to storage -  write text w/o references or appendicies to s3, summarize document, write summary to firestore
+- [x] f3(on_upload) onUpload to storage -  write text w/o references or appendicies to s3, summarize document, write summary to firestore
 - [ ] f4(cron) nightly job to read hf papers - annotate documents in firestore if item is hf-paper
 - [ ] f5(docId) - generate embedding from summary
 - [ ] f6(cron) - run clustering algorithm of last N documents - then do centroid analysis to label clusters - write results to /clusters collection date document (so you can go back in time and see other maps) - this document will feed visualization so include links or IDs to summaries
