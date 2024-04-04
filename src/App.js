@@ -28,6 +28,7 @@ function App() {
 
   return (
       <div>
+          Test line
         <Firestore3DViewer firestore={firestore}/>
       </div>
   );
