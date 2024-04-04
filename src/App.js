@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { initializeApp } from 'firebase/app';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import Firestore3DViewer from "./Firestore3DViewer";
+import {getFirestore} from "firebase/firestore";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 // Your web app's Firebase configuration
 
@@ -16,29 +19,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const functions = getFunctions(app);
+const firestore = getFirestore(app);
+
 
 
 function App() {
-  const [result, setResult] = useState('');
 
-  const callFunction = async () => {
-    const sayHello = httpsCallable(functions, 'individual_article_v2'); // Replace 'sayHello' with your function name
-    try {
-      let payload = { arxiv_id: '2403.19887' }
-      console.log("Payload: ", payload);
-      const response = await sayHello(payload); // Pass any data your function needs
-      setResult(response.data.text); // Assuming the function responds with an object containing 'text'
-    } catch (error) {
-      console.error("Error calling function:", error);
-      setResult("Failed to call function. Check the console for details.");
-    }
-  };
 
   return (
       <div>
-        <button onClick={callFunction}>Say Hello</button>
-        {result && <p>Function Response: {result}</p>}
+        <Firestore3DViewer firestore={firestore}/>
       </div>
   );
 }
