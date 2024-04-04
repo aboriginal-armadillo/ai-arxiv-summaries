@@ -6,3 +6,6 @@ openai==1.16.2
 tiktoken==0.5.2
 firebase-admin
 google-cloud-storage
+scikit-learn==1.4.0
+numpy
+joblib==1.3.2

@@ -3,7 +3,7 @@
 from firebase_functions import logger
 from download_and_upload import download_and_upload
 from openai import OpenAI
-
+from cluster import predict_cluster
 import feedparser
 
 def read_arxiv_rss(feed_url, db):
@@ -73,6 +73,7 @@ def create_firestore_entry(db, e):
         'emb_2d': response2d.data[0].embedding,
         'emb_3d': response3d.data[0].embedding,
         'emb_32d': response32d.data[0].embedding,
+        'cluster': predict_cluster(response32d.data[0].embedding),
     })
 
 def scrape_rss(url, db):

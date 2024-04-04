@@ -6,14 +6,22 @@
 from firebase_functions import storage_fn, options, https_fn, scheduler_fn, logger
 from firebase_admin import initialize_app, firestore
 
+from cluster import train_clusters_and_upload
 from on_upload import handle_upload_internal
 from scrape_rss import scrape_rss, individual_article_local
 
 initialize_app()
 db = firestore.client()
 
-# initialize_app()
-
+# TODO: make an admin pane, and turn this back into a callable function
+# in the interem, uncomment when you need to run it
+# @https_fn.on_request(timeout_sec=300,
+#                   memory=options.MemoryOption.GB_2,
+#                   cpu=2)
+# def retrain_cluster(req: https_fn.CallableRequest):
+#     logger.log("retrain_cluster called")
+#     train_clusters_and_upload(db)
+#     return {'text': "success"}
 
 @https_fn.on_call()
 def individual_article_v2(req: https_fn.CallableRequest) -> https_fn.Response:
