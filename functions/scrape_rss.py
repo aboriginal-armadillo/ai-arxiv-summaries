@@ -46,11 +46,23 @@ def create_firestore_entry(db, e):
         return None
     logger.log(f"Creating embedding for document {arxiv_id}")
     client = OpenAI()
-    response = client.embeddings.create(
+    response3d = client.embeddings.create(
         model="text-embedding-3-small",
         input=e['summary'],
         encoding_format="float",
         dimensions = 3
+    )
+    response2d = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=e['summary'],
+        encoding_format="float",
+        dimensions = 2
+    )
+    response32d = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=e['summary'],
+        encoding_format="float",
+        dimensions = 32
     )
     logger.log(f"Creating document {arxiv_id}")
     # Set the document data
@@ -58,7 +70,9 @@ def create_firestore_entry(db, e):
         'title': e.get('title', ''),
         'author': e.get('author', ''),
         'summary': e.get('summary', ''),
-        'emb_3d': response.data[0].embedding
+        'emb_2d': response2d.data[0].embedding,
+        'emb_3d': response3d.data[0].embedding,
+        'emb_32d': response32d.data[0].embedding,
     })
 
 def scrape_rss(url, db):
