@@ -1,4 +1,4 @@
-
+url: https://ai-arxiv-summaries.firebaseapp.com/
 
 ## ToDo
 
@@ -13,8 +13,13 @@
 - [ ] Footer
 - [ ] 2dmap Component
 - [ ] PaperList Component
-
-## Documentation
+- [ ] selector switches
+  - [ ] enable/disable clusters
+  - [ ] change cluster colors
+  - [ ] enable/disable papers
+  - [ ] change bkg colors
+  
+## Documentation for cloning to other stuff
 
 - [ ] Docs on setting up Firebase project
 - [ ] Docs on Cloning this project then rigging it to firebase project in last step
