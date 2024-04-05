@@ -15,12 +15,25 @@ const Firestore3DViewer = ({firestore}) => {
     useEffect(() => {
         const fetchPoints = async () => {
             const querySnapshot = await getDocs(collection(firestore, "arxiv"));
+            const force2d = true;
             const loadedPoints = querySnapshot.docs
                 .map(doc => ({
                     ...doc.data(),
                     id: doc.id
                 }))
-                .filter(doc => doc.emb_3d && doc.emb_3d.length === 3); // Ensure emb_3d exists and has 3 elements
+                .filter(doc => doc.emb_3d && doc.emb_3d.length === 3)
+                .map(doc => {
+                    if (force2d) {
+                        return {
+                            ...doc,
+                            emb_3d: [...doc.emb_2d, 0] // Transform emb_3d to be emb_2d with an additional '0' element
+                        };
+                    } else {
+                        return doc; // No transformation needed, return the doc as-is
+                    }
+                });
+
+
 
             setPoints(loadedPoints);
 

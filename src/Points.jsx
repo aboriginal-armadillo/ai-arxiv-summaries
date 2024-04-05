@@ -20,23 +20,39 @@ const clusterColors = [
 ];
 
 const Points = ({ points, handlePointClick, selectedPoint }) => {
+    // Split points into two arrays based on the presence of ai_summary
+    const pointsWithAISummary = points.filter(point => point.ai_summary !== undefined);
+    const pointsWithoutAISummary = points.filter(point => point.ai_summary === undefined);
 
     return (
         <>
+            {/* Points WITHOUT ai_summary */}
             <ThreePoints>
-                <PointMaterial transparent vertexColors size={5} sizeAttenuation={false} depthWrite={false} />
-                {points.map((point) => (
-                    <Point position={point.emb_3d}
-                           key={point.id}
-                           color={clusterColors[point.cluster]}
-                           onClick={() => handlePointClick(point)} />
+                <PointMaterial transparent vertexColors size={3} sizeAttenuation={false} depthWrite={false} />
+                {pointsWithoutAISummary.map((point) => (
+                    <Point
+                        position={point.emb_3d}
+                        key={point.id}
+                        color={clusterColors[point.cluster]}
+                        onClick={() => handlePointClick(point)}
+                    />
                 ))}
             </ThreePoints>
 
-
+            {/* Points WITH ai_summary */}
+            <ThreePoints>
+                <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
+                {pointsWithAISummary.map((point) => (
+                    <Point
+                        position={point.emb_3d}
+                        key={point.id}
+                        color={clusterColors[point.cluster]}
+                        onClick={() => handlePointClick(point)}
+                    />
+                ))}
+            </ThreePoints>
         </>
     );
 };
-
 export { Points };
 
