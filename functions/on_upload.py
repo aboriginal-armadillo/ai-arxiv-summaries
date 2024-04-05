@@ -1,5 +1,5 @@
 import fitz  # PyMuPDF
-import openai
+from openai import OpenAI
 import tiktoken
 from firebase_functions import logger
 from google.cloud import storage
@@ -75,7 +75,6 @@ def handle_upload_internal(bucket_name, file_name, db):
     logger.log(f"arxiv_id: {arxiv_id}")
     download_file_to_local(file_name, bucket_name)
     text = text_from_pdf('/tmp/article.pdf')
-    write_text_to_bucket(bucket_name, f"{arxiv_id}/article.txt", text)
     text, n_tokens = check_size(text, 124000)
     model = "gpt-3.5-turbo-16k"
     if n_tokens > 14000:
@@ -89,13 +88,13 @@ def handle_upload_internal(bucket_name, file_name, db):
     logger.log(f"{arxiv_id}: done")
 
 def summarize(text, model):
-    completion = openai.ChatCompletion.create(
+    client = OpenAI()
+    completion = client.chat.completions.create(
         model=model,
         messages=[
             {
                 "role": "system",
-                "content": "Summarize content you are provided in great "
-                           "detail (at least 600 words, up to 2000 words). Do not insert knowledge beyond the document into the summary, and do not name the author or title of the work. Your task is to summarize the document, not continue it. Some documents will end mid-sentance, still summarize the document."
+                "content": "Summarize content you are provided in great detail (at least 600 words, up to 2000 words). Do not insert knowledge beyond the document into the summary, and do not name the author or title of the work. Your task is to summarize the document, not continue it. Some documents will end mid-sentance, still summarize the document."
             },
             {
                 "role": "user",
@@ -103,7 +102,8 @@ def summarize(text, model):
             }])
     return completion.choices[0].message.content
 
+
 def update_doc(arxiv_id, db, summary):
     logger.log(f"{arxiv_id}: updating doc")
     doc_ref = db.collection('arxiv').document(arxiv_id)
-    doc_ref.update({"summary": summary, "status": "Complete"})
+    doc_ref.update({"ai_summary": summary, "status": "Complete", 'enhanced': True})

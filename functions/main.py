@@ -7,6 +7,7 @@ from firebase_functions import storage_fn, options, https_fn, scheduler_fn, logg
 from firebase_admin import initialize_app, firestore
 
 from cluster import train_clusters_and_upload
+from hf_papers import new_hf_papers
 from on_upload import handle_upload_internal
 from scrape_rss import scrape_rss, individual_article_local
 
@@ -48,3 +49,7 @@ def handle_upload(event: storage_fn.CloudEvent[storage_fn.StorageObjectData]):
     logger.log("not a pdf, ignoring")
     # Return a response (optional)
     return 'File upload handled successfully'
+
+@scheduler_fn.on_schedule(schedule="every day 00:48", memory=options.MemoryOption.MB_512)
+def get_hf_papers(event: scheduler_fn.ScheduledEvent):
+    new_hf_papers(db)

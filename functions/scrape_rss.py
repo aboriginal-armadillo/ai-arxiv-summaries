@@ -83,12 +83,6 @@ def scrape_rss(url, db):
 
 def individual_article_local(arxiv_id, db, e= {}):
     logger.log(f"{arxiv_id}: Processing...")
-    doc_ref = db.collection('arxiv').document(arxiv_id)
-    doc_ref.set({
-        "status": "Downloading...",
-        "title": e.get('title', ""),
-        "author": e.get('author',""),
-    })
     download_and_upload(arxiv_id)
 
 
