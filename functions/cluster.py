@@ -37,8 +37,8 @@ def train_clusters_and_upload(db):
     for doc_id, cluster_label, emb_3d, emb_2d in zip(doc_ids, kmeans.labels_, embeddings_3d, embeddings_2d):
         db.collection('arxiv').document(doc_id).update({
             'cluster': cluster_label.item(),
-            '3d_emb': emb_3d.tolist(),
-            '2d_emb': emb_2d.tolist()
+            'emb_3d': emb_3d.tolist(),
+            'emb_3d': emb_2d.tolist()
         })
 
     logger.log("updating complete, saving model...")

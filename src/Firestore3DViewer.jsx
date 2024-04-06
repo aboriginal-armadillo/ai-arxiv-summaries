@@ -33,8 +33,7 @@ const Firestore3DViewer = ({firestore}) => {
                     }
                 });
 
-
-
+            console.log('loadedPoints:', loadedPoints.length)
             setPoints(loadedPoints);
 
             setLoading(false);

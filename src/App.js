@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import Firestore3DViewer from "./Firestore3DViewer";
 import {getFirestore} from "firebase/firestore";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Footer from "./Footer";
 
 
 // Your web app's Firebase configuration
@@ -29,6 +30,7 @@ function App() {
   return (
       <div>
         <Firestore3DViewer firestore={firestore}/>
+          <Footer />
       </div>
   );
 }
