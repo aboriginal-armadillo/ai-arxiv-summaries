@@ -7,7 +7,7 @@ const Footer = () => {
             <Container>
                 <Row className="justify-content-center">
                     <Col md="6" className="text-center">
-                        <p>&copy; {new Date().getFullYear()} Aboriginal Armadillo LLC. All rights reserved.</p>
+                        <p style={{ color: "antiquewhite" }}>&copy; {new Date().getFullYear()} Aboriginal Armadillo LLC. All rights reserved.</p>
                         <Nav className="justify-content-center">
                             <NavItem>
                                 <NavLink href="/faq">FAQ</NavLink>

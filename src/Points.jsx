@@ -19,35 +19,70 @@ const clusterColors = [
     "#7FFF00", // Chartreuse
 ];
 
-const Points = ({ points, handlePointClick, selectedPoint }) => {
+const Points = ({ points, handlePointClick, selectedPoint, handlePointHover, hoveredPointId }) => {
     // Split points into two arrays based on the presence of ai_summary
     const pointsWithAISummary = points.filter(point => point.ai_summary !== undefined);
     const pointsWithoutAISummary = points.filter(point => point.ai_summary === undefined);
+
+    // Define distinct styles for points with and without AI summaries
+    const styleWithAISummary = {
+        color: "#ff0000", // For example, red for points with AI summaries
+        size: 15, // Larger size for emphasis
+    };
+
+    const styleWithoutAISummary = {
+        color: "#00ff00", // For example, green for points without AI summaries
+        size: 5, // Smaller size for less emphasis
+    };
 
     return (
         <>
             {/* Points WITHOUT ai_summary */}
             <ThreePoints>
-                <PointMaterial transparent vertexColors size={3} sizeAttenuation={false} depthWrite={false} />
+                <PointMaterial transparent
+                               vertexColors
+                               size={styleWithoutAISummary.size} sizeAttenuation={false} depthWrite={false} />
                 {pointsWithoutAISummary.map((point) => (
                     <Point
                         position={point.emb_3d}
                         key={point.id}
+                        // color={point.id === hoveredPointId ? "yellow" : styleWithoutAISummary.color} // Highlight hovered point
                         color={clusterColors[point.cluster]}
                         onClick={() => handlePointClick(point)}
+                        onPointerOver={(e) => {
+                            e.stopPropagation();
+                            handlePointHover(point.id);
+                        }}
+                        onPointerOut={(e) => {
+                            e.stopPropagation();
+                            handlePointHover(null); // Clear hover state when not hovering
+                        }}
                     />
                 ))}
             </ThreePoints>
 
             {/* Points WITH ai_summary */}
             <ThreePoints>
-                <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
+                <PointMaterial transparent
+                               vertexColors
+                               size={styleWithAISummary.size}
+                               sizeAttenuation={false}
+                               depthWrite={false} />
                 {pointsWithAISummary.map((point) => (
                     <Point
                         position={point.emb_3d}
                         key={point.id}
+                        // color={point.id === hoveredPointId ? "yellow" : styleWithAISummary.color} // Highlight hovered point
                         color={clusterColors[point.cluster]}
                         onClick={() => handlePointClick(point)}
+                        onPointerOver={(e) => {
+                            e.stopPropagation();
+                            handlePointHover(point.id);
+                        }}
+                        onPointerOut={(e) => {
+                            e.stopPropagation();
+                            handlePointHover(null); // Clear hover state when not hovering
+                        }}
                     />
                 ))}
             </ThreePoints>
@@ -55,4 +90,3 @@ const Points = ({ points, handlePointClick, selectedPoint }) => {
     );
 };
 export { Points };
-

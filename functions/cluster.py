@@ -11,7 +11,9 @@ import os
 def train_clusters_and_upload(db):
     logger.log("retraining clusters...")
     # Fetch embeddings from Firestore
-    model_blob_name='kmeans_model.joblib'
+    kmeans_model_blob_name='kmeans_model.joblib'
+    pca_2d_model_blob_name='pca_2d_model.joblib'
+    pca_3d_model_blob_name='pca_3d_model.joblib'
     arxiv_ref = db.collection('arxiv')
     query = arxiv_ref
     documents = query.stream()
@@ -38,7 +40,7 @@ def train_clusters_and_upload(db):
         db.collection('arxiv').document(doc_id).update({
             'cluster': cluster_label.item(),
             'emb_3d': emb_3d.tolist(),
-            'emb_3d': emb_2d.tolist()
+            'emb_2d': emb_2d.tolist()
         })
 
     logger.log("updating complete, saving model...")
@@ -51,31 +53,33 @@ def train_clusters_and_upload(db):
 
     # Upload the model to Google Cloud Storage
     bucket = storage.bucket()
-    blob = bucket.blob(model_blob_name)
+    blob = bucket.blob(kmeans_model_blob_name)
     blob.upload_from_filename(temp_model_path)
+    blob = bucket.blob(pca_3d_model_blob_name)
     blob.upload_from_filename('/tmp/pca_3d.joblib')
+    blob = bucket.blob(pca_2d_model_blob_name)
     blob.upload_from_filename('/tmp/pca_2d.joblib')
     logger.log("all done")
 
 
 def predict_cluster(embedding):
     temp_model_path = '/tmp/kmeans_model.joblib'
-    temp_2dpca_path = f'/tmp/pca_2d.joblib'
-    temp_3dpca_path = f'/tmp/pca_3d.joblib'
+    temp_2dpca_path = '/tmp/pca_2d.joblib'
+    temp_3dpca_path = '/tmp/pca_3d.joblib'
 
     logger.log("predicting cluster...")
     for loop_path in [temp_model_path, temp_2dpca_path, temp_3dpca_path]:
         if not os.path.exists(loop_path):
             model_blob_name = loop_path.split('/')[-1]
-            logger.log(f"downloading model {loop_path} from GCS...")
+            logger.log(f"downloading model {model_blob_name} from GCS...")
             # Download the model from Google Cloud Storage
             bucket = storage.bucket()
             blob = bucket.blob(model_blob_name)
             blob.download_to_filename(loop_path)
         else:
-            logger.log("model already exists locally")
+            logger.log(f"model {loop_path} already exists locally")
     # Load the model
-    logger.log('loading model...')
+    logger.log('loading models...')
     kmeans = joblib.load(temp_model_path)
     pca2d = joblib.load(temp_2dpca_path)
     pca3d = joblib.load(temp_3dpca_path)
@@ -86,5 +90,7 @@ def predict_cluster(embedding):
     embedding_reduced_2d = pca2d.transform(np.array([embedding]))
     embedding_reduced_3d = pca3d.transform(np.array([embedding]))
 
-    return {"cluster": cluster_label[0].item(), "emb_2d": embedding_reduced_2d.tolist(), "emb_3d": embedding_reduced_3d.tolist()}
+    return {"cluster": cluster_label[0].item(),
+            "emb_2d": embedding_reduced_2d.tolist(),
+            "emb_3d": embedding_reduced_3d.tolist()}
 
