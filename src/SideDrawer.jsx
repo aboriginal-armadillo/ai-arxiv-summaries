@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { ButtonGroup, ToggleButton, Offcanvas, Form } from 'react-bootstrap';
 
-function SideDrawer({ show, handleClose, handleModeChange, handleHFOnlyChange }) {
+function SideDrawer({ show, handleClose, handleModeChange, handleHFOnlyChange, mode, hfOnly }) {
     const modes = [
         { name: '3D (experimental)', value: '3d' },
         { name: '2D (experimental)' , value: '2d' },
         { name: 'List', value: 'list'}
     ];
 
-    const [activeMode, setActiveMode] = useState('3d');
-    const [HFOnly, setHFOnly] = useState(false);
+    const [activeMode, setActiveMode] = useState(mode);
+    const [HFOnly, setHFOnly] = useState(hfOnly);
 
     const handleChangeMode = (newValue) => {
         setActiveMode(newValue);

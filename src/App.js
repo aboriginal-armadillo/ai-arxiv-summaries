@@ -52,6 +52,8 @@ function App() {
             handleClose={handleDrawerClose}
             handleModeChange={handleModeChange}
             handleHFOnlyChange={handleHFOnlyChange}
+            mode={viewerMode}
+            hfOnly={HFOnly}
         />
           <Firestore3DViewer firestore={firestore} mode={viewerMode} hfOnly={HFOnly}/>
           <Footer />
