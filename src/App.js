@@ -28,8 +28,8 @@ const firestore = getFirestore(app);
 
 function App() {
   const [showDrawer, setShowDrawer] = useState(false);
-  const [viewerMode, setViewerMode] = useState('3d');
-  const [HFOnly, setHFOnly] = useState(false);
+  const [viewerMode, setViewerMode] = useState('list');
+  const [HFOnly, setHFOnly] = useState(true);
 
     const handleDrawerClose = () => setShowDrawer(false);
   const handleDrawerShow = () => setShowDrawer(true);

@@ -3,8 +3,9 @@ import { ButtonGroup, ToggleButton, Offcanvas, Form } from 'react-bootstrap';
 
 function SideDrawer({ show, handleClose, handleModeChange, handleHFOnlyChange }) {
     const modes = [
-        { name: '3D', value: '3d' },
-        { name: '2D', value: '2d' },
+        { name: '3D (experimental)', value: '3d' },
+        { name: '2D (experimental)' , value: '2d' },
+        { name: 'List', value: 'list'}
     ];
 
     const [activeMode, setActiveMode] = useState('3d');

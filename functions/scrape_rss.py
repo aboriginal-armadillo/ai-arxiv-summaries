@@ -5,6 +5,8 @@ from download_and_upload import download_and_upload
 from openai import OpenAI
 from cluster import predict_cluster
 import feedparser
+from google.cloud import firestore
+
 
 def read_arxiv_rss(feed_url, db):
     """
@@ -20,11 +22,11 @@ def read_arxiv_rss(feed_url, db):
     feed = feedparser.parse(feed_url)
 
     # Extract entries
-    entries = []
+    count = 0
     for entry in feed.entries:
-        create_firestore_entry(db, entry)
+        count += create_firestore_entry(db, entry)
 
-    return entries
+    return count
 
 def create_firestore_entry(db, e):
     """
@@ -43,7 +45,7 @@ def create_firestore_entry(db, e):
     doc_ref = db.collection('arxiv').document(arxiv_id)
     if doc_ref.get().exists:
         logger.log(f"Document {arxiv_id} already exists")
-        return None
+        return 0
     logger.log(f"Creating embedding for document {arxiv_id}")
     client = OpenAI()
 
@@ -64,7 +66,9 @@ def create_firestore_entry(db, e):
         # 'emb_3d': metadata['emb_3d'],
         'emb_32d': response32d.data[0].embedding,
         # 'cluster': metadata['cluster'],
+        'created': firestore.SERVER_TIMESTAMP
     })
+    return 1
 
 def scrape_rss(url, db):
     logger.log(f"scrape_rss({url})")

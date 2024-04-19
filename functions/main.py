@@ -37,7 +37,8 @@ def retrain_cluster(req: https_fn.CallableRequest):
                           timeout_sec=300,
                           memory=options.MemoryOption.MB_512)
 def scrape_rss_cron(event: scheduler_fn.ScheduledEvent):
-    scrape_rss("https://rss.arxiv.org/rss/cs.ai+cs.cl+cs.cv+cs.lg", db)
+    count = scrape_rss("https://rss.arxiv.org/rss/cs.ai+cs.cl+cs.cv+cs.lg", db)
+    logger.log(f"scrape_rss_cron: {count} articles processed")
 
 @storage_fn.on_object_finalized(timeout_sec=300, memory=options.MemoryOption.MB_512)
 def handle_upload(event: storage_fn.CloudEvent[storage_fn.StorageObjectData]):

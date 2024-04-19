@@ -5,6 +5,7 @@ import { Points } from './Points';
 import { CameraAdjuster } from './CameraAdjuster';
 
 import {PointModal} from "./PointModal";
+import ListView from "./ListView";
 
 const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
     const [points, setPoints] = useState([]);
@@ -25,11 +26,11 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
                     ...doc.data(),
                     id: doc.id
                 }));
-            console.log("loadedPoints: ", loadedPoints.length);
+            console.log("loadedPoints.cp1: ", loadedPoints.length);
             if (hfOnly) {
                 loadedPoints = loadedPoints.filter(doc => doc.ai_summary !== undefined);
             }
-            console.log("loadedPoints: ", loadedPoints.length);
+            console.log("loadedPoints.cp2: ", loadedPoints.length);
             loadedPoints = loadedPoints
                 .filter(doc => doc.emb_3d && doc.emb_3d.length === 3)
                 .map(doc => {
@@ -42,7 +43,7 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
                         return doc; // No transformation needed, return the doc as-is
                     }
                 });
-            console.log("loadedPoints: ", loadedPoints.length);
+            console.log("loadedPoints.cp3: ", loadedPoints.length);
             setPoints(loadedPoints);
 
             setLoading(false);
@@ -55,9 +56,12 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
 
     const handlePointClick = (pointData) => {
         setSelectedPoint(pointData);
+
         toggleModal();
     };
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    }
 
     const selectedPointStyle = {
         position: 'fixed', // Fixed position to stay in the viewport
@@ -71,6 +75,12 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
         maxWidth: '200px', // Max width to avoid overly wide text
         textAlign: 'right', // Align text to the right
     };
+
+    if (mode === 'list') {
+        return <ListView points={points}
+
+        />; // Render ListView when mode is 'list'
+    }
 
     return (
         <>
