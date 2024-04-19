@@ -21,7 +21,7 @@ const ListView = ({ points }) => {
     return (
         <>
             <Container fluid style={{ padding: '20px' }}>
-                <h2>Arxiv Articles</h2>
+                <h2 style={{ color: 'lightgrey' }}>Arxiv Articles</h2>
                 {points.map(point => (
                     <Card key={point.id} style={{ margin: '10px 0' }}>
                         <CardBody onClick={() => handleTitleClick(point)} style={{ cursor: 'pointer' }}>
