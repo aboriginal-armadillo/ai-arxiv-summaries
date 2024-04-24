@@ -33,20 +33,22 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
             console.log(loadedPoints.length);
             if (hfOnly) {
                 loadedPoints = loadedPoints.filter(doc => doc.ai_summary !== undefined);
-            }
-            console.log(loadedPoints);
-            loadedPoints = loadedPoints
-                .filter(doc => doc.emb_3d && doc.emb_3d.length === 3)
-                .map(doc => {
-                    if (mode === '2d') {
-                        return {
-                            ...doc,
-                            emb_3d: [...doc.emb_2d, 0] // Transform emb_3d to be emb_2d with an additional '0' element
-                        };
-                    } else {
-                        return doc; // No transformation needed, return the doc as-is
-                    }
-                });
+            };
+            if (!hfOnly) {
+                console.log(loadedPoints);
+                loadedPoints = loadedPoints
+                    .filter(doc => doc.emb_3d && doc.emb_3d.length === 3)
+                    .map(doc => {
+                        if (mode === '2d') {
+                            return {
+                                ...doc,
+                                emb_3d: [...doc.emb_2d, 0] // Transform emb_3d to be emb_2d with an additional '0' element
+                            };
+                        } else {
+                            return doc; // No transformation needed, return the doc as-is
+                        }
+                    });
+            };
             console.log(loadedPoints.length);
             setPoints(loadedPoints);
             setLoading(false);
