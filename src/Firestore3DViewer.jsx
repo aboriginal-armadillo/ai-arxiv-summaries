@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { Canvas } from '@react-three/fiber';
 import { Points } from './Points';
 import { CameraAdjuster } from './CameraAdjuster';
@@ -19,18 +19,22 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
     };
     useEffect(() => {
         const fetchPoints = async () => {
-            const querySnapshot = await getDocs(collection(firestore, "arxiv"));
+            // const querySnapshot = await getDocs(collection(firestore, "arxiv"));
+            const arxivRef = collection(firestore, "arxiv");
+            const arxivQuery = query(arxivRef, orderBy("created", "desc"));
+
+            const querySnapshot = await getDocs(arxivQuery);
 
             let loadedPoints = querySnapshot.docs
                 .map(doc => ({
                     ...doc.data(),
                     id: doc.id
                 }));
-            console.log("loadedPoints.cp1: ", loadedPoints.length);
+            console.log(loadedPoints.length);
             if (hfOnly) {
                 loadedPoints = loadedPoints.filter(doc => doc.ai_summary !== undefined);
             }
-            console.log("loadedPoints.cp2: ", loadedPoints.length);
+            console.log(loadedPoints);
             loadedPoints = loadedPoints
                 .filter(doc => doc.emb_3d && doc.emb_3d.length === 3)
                 .map(doc => {
@@ -43,11 +47,9 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
                         return doc; // No transformation needed, return the doc as-is
                     }
                 });
-            console.log("loadedPoints.cp3: ", loadedPoints.length);
+            console.log(loadedPoints.length);
             setPoints(loadedPoints);
-
             setLoading(false);
-
         };
 
         fetchPoints();

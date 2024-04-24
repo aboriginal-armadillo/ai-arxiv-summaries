@@ -57,15 +57,15 @@ def create_firestore_entry(db, e):
     )
     logger.log(f"Creating document {arxiv_id}")
     # Set the document data
-    # metadata = predict_cluster(response32d.data[0].embedding)
+    metadata = predict_cluster(response32d.data[0].embedding)
     doc_ref.set({
         'title': e.get('title', ''),
         'author': e.get('author', ''),
         'summary': e.get('summary', ''),
-        # 'emb_2d': metadata['emb_3d'],
-        # 'emb_3d': metadata['emb_3d'],
+        'emb_2d': metadata['emb_3d'],
+        'emb_3d': metadata['emb_3d'],
         'emb_32d': response32d.data[0].embedding,
-        # 'cluster': metadata['cluster'],
+        'cluster': metadata['cluster'],
         'created': firestore.SERVER_TIMESTAMP
     })
     return 1
