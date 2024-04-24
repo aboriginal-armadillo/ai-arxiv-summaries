@@ -33,9 +33,9 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
             console.log(loadedPoints.length);
             if (hfOnly) {
                 loadedPoints = loadedPoints.filter(doc => doc.ai_summary !== undefined);
+                console.log("hfOnly", loadedPoints.length)
             };
             if (!hfOnly) {
-                console.log(loadedPoints);
                 loadedPoints = loadedPoints
                     .filter(doc => doc.emb_3d && doc.emb_3d.length === 3)
                     .map(doc => {
@@ -48,8 +48,9 @@ const Firestore3DViewer = ({firestore, mode, hfOnly}) => {
                             return doc; // No transformation needed, return the doc as-is
                         }
                     });
+                console.log("!hfOnly", loadedPoints.length)
             };
-            console.log(loadedPoints.length);
+            console.log("final", loadedPoints.length);
             setPoints(loadedPoints);
             setLoading(false);
         };
